@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "adapters": [
+    {
+      "id": "taptop/embed-reveal-v1",
+      "category": "animation",
+      "status": "locally-reproduced",
+      "blockerReason": "The generated IntersectionObserver reveal script has local tests; a published Taptop page and editor roundtrip are still required.",
+      "observations": [
+        "contracts/behaviors/observations/taptop-embed-reveal-v1.json"
+      ],
+      "evidence": {
+        "nativeFixture": "contracts/behaviors/fixtures/tt-embed-v1.json",
+        "contract": "docs/behavior-embed-roadmap.md",
+        "serializerAdapter": "lib/reveal-embed-code.js",
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/embed-accordion-v1",
+      "category": "accordion",
+      "status": "locally-reproduced",
+      "blockerReason": "A live Bridge editor roundtrip receipt is still required before this adapter can be marked editor-verified.",
+      "observations": [
+        "contracts/behaviors/observations/taptop-embed-accordion-v1.json"
+      ],
+      "evidence": {
+        "nativeFixture": "contracts/behaviors/fixtures/tt-embed-v1.json",
+        "contract": "docs/behavior-embed-roadmap.md",
+        "serializerAdapter": "lib/behavior-package.js",
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/embed-menu-v1",
+      "category": "menu",
+      "status": "locally-reproduced",
+      "blockerReason": "Uses the accordion embed transport; a live published-page check of the menu script is still required before editor-verified.",
+      "observations": [
+        "contracts/behaviors/observations/taptop-embed-menu-v1.json"
+      ],
+      "evidence": {
+        "nativeFixture": "contracts/behaviors/fixtures/tt-embed-v1.json",
+        "contract": "docs/behavior-embed-roadmap.md",
+        "serializerAdapter": "lib/behavior-package.js",
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/embed-tabs-v1",
+      "category": "tabs",
+      "status": "locally-reproduced",
+      "blockerReason": "Uses the accordion embed transport; a live published-page check of the tabs script is still required before editor-verified.",
+      "observations": [
+        "contracts/behaviors/observations/taptop-embed-tabs-v1.json"
+      ],
+      "evidence": {
+        "nativeFixture": "contracts/behaviors/fixtures/tt-embed-v1.json",
+        "contract": "docs/behavior-embed-roadmap.md",
+        "serializerAdapter": "lib/tabs-embed-code.js",
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/embed-slider-v1",
+      "category": "slider",
+      "status": "locally-reproduced",
+      "blockerReason": "The generated slider script has local tests; a published Taptop page and editor roundtrip are still required.",
+      "observations": [
+        "contracts/behaviors/observations/taptop-embed-slider-v1.json"
+      ],
+      "evidence": {
+        "nativeFixture": "contracts/behaviors/fixtures/tt-embed-v1.json",
+        "contract": "docs/behavior-embed-roadmap.md",
+        "serializerAdapter": "lib/slider-embed-code.js",
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/embed-video-v1",
+      "category": "video",
+      "status": "locally-reproduced",
+      "blockerReason": "The generated MP4 script has local tests; a published Taptop page and editor roundtrip are still required.",
+      "observations": [
+        "contracts/behaviors/observations/taptop-embed-video-v1.json"
+      ],
+      "evidence": {
+        "nativeFixture": "contracts/behaviors/fixtures/tt-embed-v1.json",
+        "contract": "docs/behavior-embed-roadmap.md",
+        "serializerAdapter": "lib/video-embed-code.js",
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/accordion-v1",
+      "category": "accordion",
+      "status": "research-required",
+      "blockerReason": "This standalone toolkit has no verified native fixture, serialization contract, adapter or editor roundtrip for this behavior.",
+      "observations": [],
+      "evidence": {
+        "nativeFixture": null,
+        "contract": null,
+        "serializerAdapter": null,
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/cms-list-v1",
+      "category": "cms",
+      "status": "research-required",
+      "blockerReason": "This standalone toolkit has no verified native fixture, serialization contract, adapter or editor roundtrip for this behavior.",
+      "observations": [],
+      "evidence": {
+        "nativeFixture": null,
+        "contract": null,
+        "serializerAdapter": null,
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/form-v1",
+      "category": "form",
+      "status": "research-required",
+      "blockerReason": "This standalone toolkit has no verified native fixture, serialization contract, adapter or editor roundtrip for this behavior.",
+      "observations": [],
+      "evidence": {
+        "nativeFixture": null,
+        "contract": null,
+        "serializerAdapter": null,
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/swiper-slider-v1",
+      "category": "slider",
+      "status": "research-required",
+      "blockerReason": "This standalone toolkit has no verified native fixture, serialization contract, adapter or editor roundtrip for this behavior.",
+      "observations": [],
+      "evidence": {
+        "nativeFixture": null,
+        "contract": null,
+        "serializerAdapter": null,
+        "editorRoundtrip": null
+      }
+    },
+    {
+      "id": "taptop/tabs-v1",
+      "category": "tabs",
+      "status": "research-required",
+      "blockerReason": "This standalone toolkit has no verified native fixture, serialization contract, adapter or editor roundtrip for this behavior.",
+      "observations": [],
+      "evidence": {
+        "nativeFixture": null,
+        "contract": null,
+        "serializerAdapter": null,
+        "editorRoundtrip": null
+      }
+    }
+  ]
+}

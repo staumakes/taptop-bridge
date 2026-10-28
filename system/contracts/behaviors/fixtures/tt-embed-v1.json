@@ -1,0 +1,272 @@
+{
+  "type": "taptop-enhancer-layer-export",
+  "version": 1,
+  "exportedAt": "2026-06-12T09:15:04.907Z",
+  "sourceUrl": "",
+  "layerName": "widget-faq-accordion-images",
+  "clipboardData": {
+    "verId": 8998271,
+    "designId": 84523516,
+    "copiedLayout": {
+      "tree": {
+        "version": "3.1.0",
+        "tags": {
+          "ijj7mvldo": {
+            "id": "ijj7mvldo",
+            "widgetName": "tt_embed",
+            "type": "tt_embed",
+            "className": "embed",
+            "classNameIds": [
+              "class_ik2rbpei1",
+              "class_ihss57y83",
+              "class_inc9hzr7g5"
+            ],
+            "children": [
+              "ii92s9lkr"
+            ],
+            "can": [
+              "SELECT",
+              "SET_EMBED_CODE"
+            ],
+            "dataAccess": 7,
+            "embedCode": "<style>\n:root{\n  --ease:cubic-bezier(.4,0,.2,1);\n  --duration:6000ms;\n}\n\n.th-faq__item{ transition:transform .45s var(--ease); }\n\n.th-faq__card-media{ display:none; }         \n.th-faq__trigger{ background:transparent; }\n\n.th-faq__icon{\n  transition:background .4s var(--ease), transform .45s var(--ease);\n  position:relative;\n}\n.th-faq__item[data-active=\"true\"] .th-faq__icon{ transform:rotate(45deg); }\n\n/* ---- раскрытие панели (grid-rows трюк) ---- */\n.th-faq__panel{\n  display:grid;                 /* ОБЯЗАТЕЛЬНО для анимации высоты */\n  grid-template-rows:0fr;       /* закрытое состояние */\n  transition:grid-template-rows .5s var(--ease);\n}\n.th-faq__item[data-active=\"true\"] .th-faq__panel{ grid-template-rows:1fr; }\n.th-faq__panel-inner{ overflow:hidden; }\n\n.th-faq__body{\n  opacity:0;\n  transition:opacity .45s var(--ease) .08s;\n}\n.th-faq__item[data-active=\"true\"] .th-faq__body{ opacity:1; transform:translateY(0); }\n\n/* ---- прогресс ---- */\n.th-faq__progress{ position:relative; overflow:hidden; }\n.th-faq__progress-bar{         \n  position:absolute;\n  inset:0;\n  transform-origin:left center;\n  transform:scaleX(0);\n}\n.th-faq__item[data-active=\"true\"] .th-faq__progress-bar{\n  animation:faq-fill var(--duration,6000ms) linear forwards;\n}\n@keyframes faq-fill{ from{transform:scaleX(0);} to{transform:scaleX(1);} }\n\n/* ---- правая панель ---- */\n.th-faq__stage{ flex:1; }\n.th-faq__image{\n  position:absolute; inset:0;\n  opacity:0;\n  transition:opacity .7s var(--ease);\n}\n.th-faq__image[data-visible=\"true\"]{ opacity:1; }\n\n@media (max-width:1024px){\n  .th-faq{ grid-template-columns:1fr; }\n  .th-faq__media{ display:none; }        /* превью справа скрыто */\n  .th-faq__card-media{ display:flex; }   /* картинка показывается над контентом карточки */\n  .th-faq__progress{ display:none; }     /* линия прогресса убрана */\n}\n</style>\n\n<script>\n(function(){\n  function init(){\n    var root = document.querySelector('.th-faq');\n    if (!root) return;\n\n    var items = Array.prototype.slice.call(root.querySelectorAll('.th-faq__item'));\n    if (!items.length) return;\n\n    var stage  = root.querySelector('.th-faq__stage');\n    var images = stage ? Array.prototype.slice.call(stage.querySelectorAll('.th-faq__image')) : [];\n\n    var duration = parseInt(root.getAttribute('data-duration'), 10) || 6000;\n    var mqStack  = window.matchMedia('(max-width: 1024px)');\n    var timer    = null;\n\n    // ---- 1) clone each image from the right panel into its card (idempotent) ----\n    items.forEach(function(item, i){\n      var media    = item.querySelector('.th-faq__card-media');\n      var srcLayer = images[i];\n      if (!media || !srcLayer) return;\n      if (media.querySelector('.th-faq__img, [data-faq__img]')) return; // already cloned\n      var img = srcLayer.querySelector('.th-faq__img, [data-faq__img]');\n      if (img) media.appendChild(img.cloneNode(true)); // copy as-is, styling stays in your CSS\n    });\n\n    // ---- 2) set up the right panel as cross-fading layers ----\n    if (stage && images.length){\n      var h = images[0].offsetHeight;\n      if (getComputedStyle(stage).position === 'static') stage.style.position = 'relative';\n      if (h > 0) stage.style.minHeight = h + 'px';\n      images.forEach(function(layer, i){\n        layer.style.position = 'absolute';\n        layer.style.top = layer.style.left = layer.style.right = layer.style.bottom = '0';\n        layer.style.transition = 'opacity .6s ease';\n        layer.style.opacity = (i === 0) ? '1' : '0';\n      });\n    }\n\n    function showPreview(index){\n      images.forEach(function(l, i){ l.style.opacity = (i === index) ? '1' : '0'; });\n    }\n\n    // ---- 3) accordion ----\n    function open(index, withTimer){\n      items.forEach(function(it, i){\n        it.setAttribute('data-active', i === index ? 'true' : 'false'); // drives panel + progress CSS\n      });\n      showPreview(index);\n      if (timer){ clearTimeout(timer); timer = null; }\n      if (withTimer && !mqStack.matches){ // autoslide only on desktop\n        timer = setTimeout(function(){ open((index + 1) % items.length, true); }, duration);\n      }\n    }\n\n    items.forEach(function(item, i){\n      // neutralize hash-links so the header click can't jump the page to the top\n      Array.prototype.slice.call(item.querySelectorAll('a[href]')).forEach(function(a){\n        var hr = a.getAttribute('href');\n        if (hr === '#' || (hr && hr.charAt(0) === '#')) a.removeAttribute('href');\n      });\n\n      if (!item.__faqBound){           // bind the click handler only once per card\n        item.__faqBound = true;\n        item.addEventListener('click', function(e){\n          if (e && e.cancelable) e.preventDefault();\n          var isActive = item.getAttribute('data-active') === 'true';\n          if (isActive){\n            item.setAttribute('data-active', 'false');\n            if (timer){ clearTimeout(timer); timer = null; }\n          } else {\n            open(i, true);\n          }\n        });\n      }\n    });\n\n    open(0, true); // first card open + start the cycle on desktop\n\n    if (!root.__faqMqBound){\n      root.__faqMqBound = true;\n      mqStack.addEventListener('change', function(){\n        var activeIndex = items.findIndex(function(it){ return it.getAttribute('data-active') === 'true'; });\n        open(activeIndex < 0 ? 0 : activeIndex, true);\n      });\n    }\n  }\n\n  if (document.readyState === 'loading'){\n    document.addEventListener('DOMContentLoaded', init);\n  } else {\n    init();\n  }\n})();\n</script>",
+            "name": "widget-faq-accordion-images"
+          },
+          "ii92s9lkr": {
+            "id": "ii92s9lkr",
+            "parent": "ijj7mvldo",
+            "className": "embed__stub",
+            "classNameIds": [
+              "class_iwz43i07c"
+            ],
+            "children": [
+              "ihuqazg53"
+            ],
+            "dataAccess": 7
+          },
+          "ihuqazg53": {
+            "id": "ihuqazg53",
+            "parent": "ii92s9lkr",
+            "className": "embed__hint",
+            "classNameIds": [
+              "class_iohyc8z41"
+            ],
+            "children": [
+              "ia7hzxa62",
+              "ig6awbi3r"
+            ],
+            "dataAccess": 7
+          },
+          "ia7hzxa62": {
+            "id": "ia7hzxa62",
+            "parent": "ihuqazg53",
+            "className": "embed__icon",
+            "classNameIds": [
+              "class_imlcd5d1r"
+            ],
+            "dataAccess": 7
+          },
+          "ig6awbi3r": {
+            "id": "ig6awbi3r",
+            "parent": "ihuqazg53",
+            "className": "embed__hint-text",
+            "classNameIds": [
+              "class_i6lrlwjsb"
+            ],
+            "children": [
+              "it3dznt81",
+              "i0dre165p",
+              "ipk0xqdfm"
+            ],
+            "dataAccess": 7
+          },
+          "it3dznt81": {
+            "id": "it3dznt81",
+            "parent": "ig6awbi3r",
+            "className": "embed__hint-title",
+            "classNameIds": [
+              "class_i5tdxy0ag"
+            ],
+            "data": {
+              "text": {
+                "type": "HTML",
+                "value": "Пользовательский код"
+              }
+            },
+            "dataSource": "from_parent",
+            "dataAccess": 7
+          },
+          "i0dre165p": {
+            "id": "i0dre165p",
+            "parent": "ig6awbi3r",
+            "className": "embed__hint-empty-note",
+            "classNameIds": [
+              "class_i2omrt1um"
+            ],
+            "data": {
+              "text": {
+                "type": "HTML",
+                "value": "Дважды щелкните, чтобы встроить пользовательский код"
+              }
+            },
+            "dataSource": "from_parent",
+            "dataAccess": 7
+          },
+          "ipk0xqdfm": {
+            "id": "ipk0xqdfm",
+            "parent": "ig6awbi3r",
+            "className": "embed__hint-note",
+            "classNameIds": [
+              "class_i1izehyr8"
+            ],
+            "data": {
+              "text": {
+                "type": "HTML",
+                "value": "Этот код будет работать только на опубликованном/��кспортированном проекте"
+              }
+            },
+            "dataSource": "from_parent",
+            "dataAccess": 7
+          }
+        },
+        "forms": {},
+        "root": "ijj7mvldo",
+        "dataCollection": {
+          "map": {}
+        }
+      },
+      "mainSelectorCollection": {
+        "map": {
+          "screen/.embed": {
+            "media": "screen",
+            "selectorText": ".embed",
+            "rules": {
+              "min-height": {
+                "name": "min-height",
+                "value": "100px",
+                "isCustom": false,
+                "serializeValue": "100px",
+                "number": 100,
+                "unit": "px"
+              },
+              "position": {
+                "name": "position",
+                "value": "relative",
+                "isCustom": false,
+                "serializeValue": "relative"
+              }
+            }
+          },
+          "screen/.helper--d-none": {
+            "media": "screen",
+            "selectorText": ".helper--d-none",
+            "rules": {
+              "display": {
+                "name": "display",
+                "value": "none",
+                "isCustom": false,
+                "serializeValue": "none"
+              }
+            }
+          }
+        }
+      },
+      "designSelectorCollection": {
+        "map": {}
+      },
+      "cmSelectorCollection": {
+        "map": {}
+      },
+      "animationSelectorCollection": {
+        "map": {}
+      },
+      "mainClassNameCollection": {
+        "map": {
+          "class_ik2rbpei1": {
+            "id": "class_ik2rbpei1",
+            "value": "embed"
+          },
+          "class_iohyc8z41": {
+            "id": "class_iohyc8z41",
+            "value": "embed__hint"
+          },
+          "class_i2omrt1um": {
+            "id": "class_i2omrt1um",
+            "value": "embed__hint-empty-note"
+          },
+          "class_i1izehyr8": {
+            "id": "class_i1izehyr8",
+            "value": "embed__hint-note"
+          },
+          "class_i6lrlwjsb": {
+            "id": "class_i6lrlwjsb",
+            "value": "embed__hint-text"
+          },
+          "class_i5tdxy0ag": {
+            "id": "class_i5tdxy0ag",
+            "value": "embed__hint-title"
+          },
+          "class_imlcd5d1r": {
+            "id": "class_imlcd5d1r",
+            "value": "embed__icon"
+          },
+          "class_iwz43i07c": {
+            "id": "class_iwz43i07c",
+            "value": "embed__stub"
+          },
+          "class_inc9hzr7g5": {
+            "id": "class_inc9hzr7g5",
+            "value": "helper--d-none"
+          }
+        },
+        "countMap": {
+          "embed": 1,
+          "embed__hint": 1,
+          "embed__hint-empty-note": 1,
+          "embed__hint-note": 1,
+          "embed__hint-text": 1,
+          "embed__hint-title": 1,
+          "embed__icon": 1,
+          "embed__stub": 1,
+          "helper--d-none": 1
+        },
+        "sortMap": {
+          "class_ik2rbpei1": "class_iohyc8z41",
+          "class_iohyc8z41": "class_i2omrt1um",
+          "class_i2omrt1um": "class_i1izehyr8",
+          "class_i1izehyr8": "class_i6lrlwjsb",
+          "class_i6lrlwjsb": "class_i5tdxy0ag",
+          "class_i5tdxy0ag": "class_imlcd5d1r",
+          "class_imlcd5d1r": "class_iwz43i07c",
+          "class_iwz43i07c": "class_inc9hzr7g5",
+          "class_inc9hzr7g5": ""
+        },
+        "head": {
+          "id": "class_ik2rbpei1",
+          "value": "embed"
+        }
+      },
+      "designClassNameCollection": {
+        "map": {
+          "class_ihss57y83": {
+            "id": "class_ihss57y83",
+            "value": "embed--u-ijj7mvldo"
+          }
+        },
+        "countMap": {
+          "embed--u-ijj7mvldo": 1
+        },
+        "sortMap": {
+          "class_ihss57y83": ""
+        },
+        "head": {
+          "id": "class_ihss57y83",
+          "value": "embed--u-ijj7mvldo"
+        }
+      }
+    },
+    "action": "copy",
+    "tagID": "ijj7mvldo_0",
+    "isElementInCollection": false
+  }
+}

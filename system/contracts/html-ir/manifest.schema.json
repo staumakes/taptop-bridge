@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-taptop.local/contracts/html-ir/manifest.schema.json",
+  "title": "Approved HTML component compiler manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "componentKey", "html", "rootSelector", "stylesheets", "breakpointMap"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "componentKey": { "$ref": "#/$defs/logicalKey" },
+    "html": { "$ref": "#/$defs/relativePath" },
+    "rootSelector": { "type": "string", "minLength": 1 },
+    "stylesheets": { "type": "array", "items": { "$ref": "#/$defs/relativePath" } },
+    "selectorMappings": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["sourceSelector", "targetClass", "channel"],
+        "properties": {
+          "sourceSelector": { "type": "string", "minLength": 1 },
+          "targetClass": { "type": "string", "minLength": 1 },
+          "channel": { "enum": ["main", "design", "cm", "animation"] },
+          "pseudoSuffix": { "type": "string" }
+        }
+      }
+    },
+    "behaviorManifest": { "$ref": "#/$defs/relativePath" },
+    "breakpointMap": {
+      "type": "object",
+      "additionalProperties": { "enum": ["screen", "(max-width: 991px)", "(max-width: 767px)", "(max-width: 479px)"] }
+    }
+  },
+  "$defs": {
+    "logicalKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$" },
+    "relativePath": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?!.*(?:^|/)\\.\\.(?:/|$)).+$" }
+  }
+}

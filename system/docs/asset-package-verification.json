@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-02",
+  "scope": "portable asset package",
+  "tests": {
+    "command": "npm test",
+    "passed": 136,
+    "failed": 0,
+    "standaloneCopy": true
+  },
+  "assetChecks": [
+    "PNG, JPEG, WebP and GIF header metadata",
+    "SHA-256 naming and byte deduplication",
+    "relative paths only",
+    "package asset hash tamper detection",
+    "no localhost URL in image wrapper"
+  ],
+  "originalMvp": {
+    "filesChecked": 764,
+    "filesChanged": []
+  },
+  "notVerified": [
+    "upload to a live Taptop media library",
+    "target-local media ID recording",
+    "visual result after a live editor paste"
+  ],
+  "skill": {
+    "path": "skill/taptop-site-transfer",
+    "quickValidation": "passed",
+    "triggerPrompts": 6
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "include": [
+    "README.md",
+    "AGENTS.md",
+    "package.json",
+    "package-lock.json",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md",
+    ".gitignore",
+    "bin/taptop.js",
+    "projects/README.md",
+    "system/",
+    "CLAUDE.md",
+    ".claude/skills/",
+    ".agents/skills/",
+    ".claude/settings.json",
+    ".github/workflows/"
+  ],
+  "exclude": [
+    {
+      "path": "system/docs/handoffs/",
+      "reason": "author-specific session handoffs with local paths"
+    },
+    {
+      "path": "system/docs/superpowers/",
+      "reason": "author-specific plans and specs with local paths"
+    },
+    {
+      "path": "system/docs/release/migration-map.md",
+      "reason": "private migration record"
+    },
+    {
+      "path": "system/docs/mvp-release-plan.md",
+      "reason": "historical plan with local paths"
+    },
+    {
+      "path": "system/docs/behavior-embed-roadmap.md",
+      "reason": "historical notes naming a private test site"
+    },
+    {
+      "path": "system/docs/references/",
+      "reason": "external reference material; redistribution rights not established"
+    }
+  ],
+  "neverInclude": [
+    "node_modules/",
+    ".work/",
+    ".git/",
+    "dist/",
+    ".DS_Store",
+    "projects/"
+  ],
+  "mentionedButNotShipped": [
+    "system/docs/handoffs/",
+    "system/docs/superpowers/",
+    "system/docs/references/",
+    "system/docs/release/migration-map.md",
+    "system/docs/mvp-release-plan.md",
+    "system/docs/behavior-embed-roadmap.md"
+  ]
+}

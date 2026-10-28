@@ -1,0 +1,5 @@
+{
+  "adapter": "taptop/embed-tabs-v1",
+  "evidenceLevel": "locally-reproduced",
+  "summary": "Same tt_embed package and Scripts bridge as the accordion embed. Triggers and panels stay plain editable layers; the script moves the active class between the n-th trigger and the n-th panel, and the hidden-panel CSS travels in the embed. Published-page behavior still needs a live check."
+}

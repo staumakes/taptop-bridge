@@ -1,0 +1,5 @@
+{
+  "adapter": "taptop/embed-reveal-v1",
+  "evidenceLevel": "locally-reproduced",
+  "summary": "An Embed can add Tilda's t-animate_started class when an editable target enters the viewport and restore opacity if its source effect does not finish."
+}

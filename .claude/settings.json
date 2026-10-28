@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/system/scripts/agent-docs-hook.js\"",
+            "timeout": 30,
+            "statusMessage": "Syncing agent docs"
+          }
+        ]
+      }
+    ]
+  }
+}

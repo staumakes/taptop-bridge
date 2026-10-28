@@ -1,0 +1,32 @@
+{
+  "intake": {
+    "schemaVersion": 1,
+    "sourceType": "figma-with-kit",
+    "figma": {
+      "fileUrl": "https://www.figma.com/design/SYNTHETIC/Taptop-Bridge-Pilot",
+      "screens": ["Synthetic Home"],
+      "uiKit": { "location": "same-file" }
+    }
+  },
+  "evidence": [
+    { "id": "kit-button", "kind": "figma-component", "ref": "synthetic:figma-kit/PrimaryButton" },
+    { "id": "kit-footer", "kind": "figma-screen", "ref": "synthetic:figma-kit/Home/Footer" }
+  ],
+  "foundations": {
+    "colors": { "accent": { "value": "#3290ff", "evidenceIds": ["kit-button"] } },
+    "typography": { "button": { "value": { "font-size": "16px", "font-weight": "600" }, "evidenceIds": ["kit-button"] } }
+  },
+  "components": [
+    {
+      "stableKey": "primary-button",
+      "evidenceIds": ["kit-button"],
+      "classes": [{ "role": "button/primary", "declarations": { "screen": { "background-color": "#3290ff", "border-radius": "12px", "color": "#ffffff", "padding": "12px 16px" } }, "evidenceIds": ["kit-button"] }]
+    },
+    {
+      "stableKey": "footer-cta",
+      "evidenceIds": ["kit-footer"],
+      "classes": [{ "role": "button/primary", "declarations": { "screen": { "background-color": "#3290ff", "border-radius": "12px", "color": "#ffffff", "padding": "12px 16px" } }, "evidenceIds": ["kit-footer"] }]
+    }
+  ],
+  "pages": [{ "stableKey": "home", "componentKeys": ["primary-button", "footer-cta"], "evidenceIds": ["kit-button", "kit-footer"] }]
+}

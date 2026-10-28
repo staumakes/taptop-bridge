@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "sourceType": "figma-without-kit",
+  "figma": {
+    "fileUrl": "https://www.figma.com/design/REPLACE_ME/Project",
+    "screens": ["REPLACE_ME: Desktop home"]
+  },
+  "foundationStrategy": "extract-from-screens"
+}

@@ -1,0 +1,6 @@
+.env
+.env.*
+!.env.example
+.taptop/receipts/
+output/
+node_modules/

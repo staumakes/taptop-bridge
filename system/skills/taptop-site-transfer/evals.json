@@ -1,0 +1,55 @@
+[
+  {
+    "prompt": "Перенеси этот лендинг из Figma в Taptop. В файле есть UI kit и макеты desktop/mobile.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Есть только Figma с одной десктопной страницей, без компонентов. Хочу получить редактируемый сайт в Taptop.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "У меня готовый HTML и CSS с картинками в папке. Собери переносимый пакет для Taptop.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Сделай мне красивый Hero для Taptop с нуля.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Почини существующую форму в моём Taptop-проекте.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Нарисуй UI kit в Figma для нового сервиса.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Сделай следующую страницу для сайта, контакты.",
+    "should_trigger": true,
+    "expected": "Run projects; with several projects ask which one; never pick by memory or alphabet."
+  },
+  {
+    "prompt": "Где лежит JSON для импорта главной страницы моего проекта shop?",
+    "should_trigger": true,
+    "expected": "Use projects/shop, run doctor or artifact list, give output/json/pages--home--<build>.json and the preview path."
+  },
+  {
+    "prompt": "Сборка страницы упала с UI_KIT_CLASS_MISMATCH: btn, что делать?",
+    "should_trigger": true,
+    "expected": "Explain the kit is authoritative; change the UI kit first or use its exact rules; never patch JSON."
+  },
+  {
+    "prompt": "Просто вставь мой HTML как есть, нормализатор не нужен.",
+    "should_trigger": true,
+    "expected": "Refuse to skip the normalizer; register and build the page."
+  },
+  {
+    "prompt": "Тесты прошли, значит импорт в Taptop работает? Запиши, что проверено в редакторе.",
+    "should_trigger": true,
+    "expected": "No: a build is not an editor check; record editor only after a real import with evidence."
+  },
+  {
+    "prompt": "Почини стили в моём React-приложении.",
+    "should_trigger": false
+  }
+]

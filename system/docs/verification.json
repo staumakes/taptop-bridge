@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-05",
+  "tests": {
+    "passed": 182,
+    "failed": 0,
+    "execution": "npm test in the isolated Taptop Bridge, 2026-10-05"
+  },
+  "originalFilesChecked": 764,
+  "originalFilesChanged": [],
+  "sample": {
+    "nodes": 3,
+    "managedClasses": 4,
+    "localPreflight": "pass",
+    "liveEditorImport": "not-run"
+  },
+  "review": "Two important issues reproduced and regression-tested: grouped selectors, ignored HTML attributes",
+  "npmCi": "passed; registry access required outside restricted network sandbox"
+  ,
+  "packageInspector": {
+    "manifest": "passed; Manifest V3 with no permissions or host_permissions",
+    "validPackage": "passed",
+    "missingOrChangedAsset": "passed",
+    "malformedOrUnsupportedPackage": "passed",
+    "editorMutation": "not-implemented"
+  },
+  "editorContextProbe": {
+    "activeTab": "passed; runs only after the user clicks the popup button",
+    "hostPermissions": "absent",
+    "pageMutation": "not-implemented"
+  },
+  "extensionSession": {
+    "oneJsonPackage": "passed",
+    "embeddedAssetHashValidation": "passed",
+    "layersLauncher": "passed in automated checks",
+    "partialImportProtection": "passed",
+    "liveEditorTransport": "not-run; requires a disposable Taptop project"
+  },
+  "sourceIntake": {
+    "figmaWithKit": "passed",
+    "figmaWithoutKit": "passed",
+    "html": "passed",
+    "projectStateMutation": "not-implemented"
+  },
+  "originalFilesCheckAfterInspector": {
+    "checked": 764,
+    "changed": 0
+  }
+}

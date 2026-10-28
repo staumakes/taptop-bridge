@@ -1,0 +1,32 @@
+{
+  "intake": {
+    "schemaVersion": 1,
+    "sourceType": "ai-generated",
+    "ai": {
+      "brief": "Synthetic landing-page pilot",
+      "visualDirection": "Light interface with a blue primary action",
+      "approved": true
+    }
+  },
+  "evidence": [
+    { "id": "approved-direction", "kind": "ai-direction", "ref": "synthetic:approved-direction/v1" },
+    { "id": "generated-footer", "kind": "ai-output", "ref": "synthetic:generated-layout/Footer" }
+  ],
+  "foundations": {
+    "colors": { "accent": { "value": "#3290ff", "evidenceIds": ["approved-direction"] } },
+    "typography": { "button": { "value": { "font-size": "16px", "font-weight": "600" }, "evidenceIds": ["approved-direction"] } }
+  },
+  "components": [
+    {
+      "stableKey": "primary-button",
+      "evidenceIds": ["approved-direction"],
+      "classes": [{ "role": "button/primary", "declarations": { "screen": { "background-color": "#3290ff", "border-radius": "12px", "color": "#ffffff", "padding": "12px 16px" } }, "evidenceIds": ["approved-direction"] }]
+    },
+    {
+      "stableKey": "footer-cta",
+      "evidenceIds": ["generated-footer"],
+      "classes": [{ "role": "button/primary", "declarations": { "screen": { "background-color": "#3290ff", "border-radius": "12px", "color": "#ffffff", "padding": "12px 16px" } }, "evidenceIds": ["generated-footer"] }]
+    }
+  ],
+  "pages": [{ "stableKey": "home", "componentKeys": ["primary-button", "footer-cta"], "evidenceIds": ["approved-direction", "generated-footer"] }]
+}

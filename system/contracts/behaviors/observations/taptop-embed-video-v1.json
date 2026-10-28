@@ -1,0 +1,5 @@
+{
+  "adapter": "taptop/embed-video-v1",
+  "evidenceLevel": "locally-reproduced",
+  "summary": "The Tilda inline MP4 and video dialog are normalized to editable shells. A generated tt_embed script creates HTML5 video elements from declared HTTPS source URLs. Published-page behavior still needs a live check."
+}

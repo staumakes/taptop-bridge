@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://taptop-bridge.local/contracts/project/artifacts.schema.json",
+  "title": "Taptop Bridge artifact registry (source/artifacts.json)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "artifacts"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "html", "stylesheets"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^(?:ui-kit|components/[a-z0-9]+(?:-[a-z0-9]+)*|pages/[a-z0-9]+(?:-[a-z0-9]+)*)$" },
+          "title": { "type": "string", "pattern": "\\S" },
+          "html": { "$ref": "#/$defs/projectPath" },
+          "stylesheets": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/projectPath" } },
+          "rootSelector": { "type": "string", "pattern": "^\\.[_a-zA-Z-][_a-zA-Z0-9-]*$" },
+          "intake": { "$ref": "#/$defs/projectPath" },
+          "dependsOn": { "type": "array", "uniqueItems": true, "items": { "type": "string" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "projectPath": {
+      "description": "Project-relative path with forward slashes, inside input/, source/ or design-system/; never output/, .taptop/ or source/normalized/. The runtime also rejects '..', symlinks out of the project, missing files, cycles and dependencies on pages.",
+      "type": "string",
+      "pattern": "^(?!/)(?!\\./)(?!output/)(?!\\.taptop/)(?!source/normalized/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\]+$"
+    }
+  }
+}

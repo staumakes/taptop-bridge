@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "sourceType": "html",
+  "html": {
+    "entry": "input/home/index.html",
+    "stylesheets": [
+      "input/home/styles.css"
+    ]
+  }
+}

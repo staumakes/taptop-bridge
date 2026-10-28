@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Taptop Bridge source intake",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "sourceType"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sourceType": {
+      "enum": [
+        "figma-with-kit",
+        "figma-without-kit",
+        "ai-generated",
+        "html"
+      ]
+    },
+    "figma": {
+      "type": "object"
+    },
+    "foundationStrategy": {
+      "const": "extract-from-screens"
+    },
+    "html": {
+      "type": "object",
+      "properties": {
+        "entry": {
+          "type": "string"
+        },
+        "stylesheets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "sliders": {
+          "description": "Swiper options copied from the source script, one entry per .swiper element (matched by one of its classes). Option names are Swiper's; the normalizer reports options it cannot reproduce (SWIPER_OPTION_UNSUPPORTED).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "selector"
+            ],
+            "properties": {
+              "selector": {
+                "type": "string",
+                "pattern": "^\\.[_a-zA-Z-][_a-zA-Z0-9-]*$"
+              },
+              "source": {
+                "type": "string",
+                "description": "Script the options were read from, for the record."
+              },
+              "slidesPerView": {
+                "anyOf": [
+                  {
+                    "const": "auto"
+                  },
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 8
+                  }
+                ]
+              },
+              "spaceBetween": {
+                "type": "number",
+                "minimum": 0
+              },
+              "breakpoints": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "slidesPerView": {},
+                    "spaceBetween": {
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "centeredSlides": {
+                "type": "boolean"
+              },
+              "initialSlide": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "loop": {
+                "type": "boolean"
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 5000
+              },
+              "slidesPerGroup": {
+                "const": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "ai": {
+      "type": "object"
+    }
+  }
+}

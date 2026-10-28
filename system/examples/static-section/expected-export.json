@@ -1,0 +1,476 @@
+{
+  "type": "taptop-enhancer-layer-export",
+  "version": 1,
+  "exportedAt": "2026-10-02T11:42:02.090Z",
+  "sourceUrl": "",
+  "layerName": "examples/static-section",
+  "sourceRevision": "6748f1536b317881936e8ee2eca6067f1f18b95f2490ee0dbf519921a38a7715",
+  "clipboardData": {
+    "action": "copy",
+    "tagID": "i1rkwhr3h",
+    "copiedLayout": {
+      "tree": {
+        "version": "3.1.0",
+        "root": "i1rkwhr3h",
+        "tags": {
+          "i1rkwhr3h": {
+            "id": "i1rkwhr3h",
+            "widgetName": "div",
+            "type": "div",
+            "alias": "div",
+            "className": "div",
+            "classNameIds": [
+              "class_i2k7l4gzp",
+              "class_is0ulu2i4"
+            ],
+            "children": [
+              "ihp6uj3xz",
+              "inogu4iyr"
+            ],
+            "can": [
+              "SELECT",
+              "INSERT"
+            ],
+            "dataAccess": 7,
+            "name": "example-panel"
+          },
+          "ihp6uj3xz": {
+            "id": "ihp6uj3xz",
+            "widgetName": "text",
+            "type": "text",
+            "alias": "text",
+            "className": "text",
+            "classNameIds": [
+              "class_i1qe8cis9",
+              "class_itg677jks",
+              "class_i9wfzquud"
+            ],
+            "children": [],
+            "can": [
+              "SELECT",
+              "SET_TEXT"
+            ],
+            "dataAccess": 7,
+            "name": "brand-heading",
+            "parent": "i1rkwhr3h",
+            "data": {
+              "text": {
+                "type": "HTML",
+                "value": "Bridge contract fixture"
+              }
+            }
+          },
+          "inogu4iyr": {
+            "id": "inogu4iyr",
+            "widgetName": "text",
+            "type": "text",
+            "alias": "text",
+            "className": "text",
+            "classNameIds": [
+              "class_i1qe8cis9",
+              "class_i7kitxcrl"
+            ],
+            "children": [],
+            "can": [
+              "SELECT",
+              "SET_TEXT"
+            ],
+            "dataAccess": 7,
+            "name": "example-copy",
+            "parent": "i1rkwhr3h",
+            "data": {
+              "text": {
+                "type": "HTML",
+                "value": "Synthetic content for verifying the converter."
+              }
+            }
+          }
+        },
+        "dataCollection": {
+          "map": {}
+        },
+        "forms": {}
+      },
+      "mainClassNameCollection": {
+        "map": {
+          "class_i2k7l4gzp": {
+            "id": "class_i2k7l4gzp",
+            "value": "div"
+          },
+          "class_is0ulu2i4": {
+            "id": "class_is0ulu2i4",
+            "value": "example-panel"
+          },
+          "class_i1qe8cis9": {
+            "id": "class_i1qe8cis9",
+            "value": "text"
+          },
+          "class_itg677jks": {
+            "id": "class_itg677jks",
+            "value": "example-heading"
+          },
+          "class_i9wfzquud": {
+            "id": "class_i9wfzquud",
+            "value": "brand-heading"
+          },
+          "class_i7kitxcrl": {
+            "id": "class_i7kitxcrl",
+            "value": "example-copy"
+          }
+        },
+        "countMap": {
+          "div": 1,
+          "example-panel": 1,
+          "text": 1,
+          "example-heading": 1,
+          "brand-heading": 1,
+          "example-copy": 1
+        },
+        "sortMap": {
+          "class_i2k7l4gzp": "class_is0ulu2i4",
+          "class_is0ulu2i4": "class_i1qe8cis9",
+          "class_i1qe8cis9": "class_itg677jks",
+          "class_itg677jks": "class_i9wfzquud",
+          "class_i9wfzquud": "class_i7kitxcrl",
+          "class_i7kitxcrl": ""
+        },
+        "head": {
+          "id": "class_i2k7l4gzp",
+          "value": "div"
+        }
+      },
+      "designClassNameCollection": {
+        "map": {},
+        "countMap": {},
+        "sortMap": {}
+      },
+      "mainSelectorCollection": {
+        "map": {
+          "screen/.brand-heading": {
+            "media": "screen",
+            "selectorText": ".brand-heading",
+            "rules": {
+              "font-size": {
+                "name": "font-size",
+                "value": "36px",
+                "isCustom": false,
+                "serializeValue": "36px",
+                "number": 36,
+                "unit": "px"
+              },
+              "line-height": {
+                "name": "line-height",
+                "value": "1.2",
+                "isCustom": false,
+                "serializeValue": "1.2"
+              }
+            }
+          },
+          "(max-width: 991px)/.brand-heading": {
+            "media": "(max-width: 991px)",
+            "selectorText": ".brand-heading",
+            "rules": {
+              "font-size": {
+                "name": "font-size",
+                "value": "32px",
+                "isCustom": false,
+                "serializeValue": "32px",
+                "number": 32,
+                "unit": "px"
+              }
+            }
+          },
+          "(max-width: 767px)/.brand-heading": {
+            "media": "(max-width: 767px)",
+            "selectorText": ".brand-heading",
+            "rules": {
+              "font-size": {
+                "name": "font-size",
+                "value": "28px",
+                "isCustom": false,
+                "serializeValue": "28px",
+                "number": 28,
+                "unit": "px"
+              }
+            }
+          },
+          "(max-width: 479px)/.brand-heading": {
+            "media": "(max-width: 479px)",
+            "selectorText": ".brand-heading",
+            "rules": {
+              "font-size": {
+                "name": "font-size",
+                "value": "24px",
+                "isCustom": false,
+                "serializeValue": "24px",
+                "number": 24,
+                "unit": "px"
+              }
+            }
+          },
+          "screen/.example-copy": {
+            "media": "screen",
+            "selectorText": ".example-copy",
+            "rules": {
+              "font-size": {
+                "name": "font-size",
+                "value": "18px",
+                "isCustom": false,
+                "serializeValue": "18px",
+                "number": 18,
+                "unit": "px"
+              }
+            }
+          },
+          "screen/.example-heading": {
+            "media": "screen",
+            "selectorText": ".example-heading",
+            "rules": {
+              "margin-top": {
+                "name": "margin-top",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              },
+              "margin-right": {
+                "name": "margin-right",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              },
+              "margin-bottom": {
+                "name": "margin-bottom",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              },
+              "margin-left": {
+                "name": "margin-left",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              }
+            }
+          },
+          "screen/.example-panel": {
+            "media": "screen",
+            "selectorText": ".example-panel",
+            "rules": {
+              "display": {
+                "name": "display",
+                "value": "flex",
+                "isCustom": false,
+                "serializeValue": "flex"
+              },
+              "flex-direction": {
+                "name": "flex-direction",
+                "value": "column",
+                "isCustom": false,
+                "serializeValue": "column"
+              },
+              "gap": {
+                "name": "gap",
+                "value": "24px",
+                "isCustom": true,
+                "serializeValue": "24px",
+                "number": 24,
+                "unit": "px"
+              }
+            }
+          },
+          "(max-width: 767px)/.example-panel": {
+            "media": "(max-width: 767px)",
+            "selectorText": ".example-panel",
+            "rules": {
+              "gap": {
+                "name": "gap",
+                "value": "16px",
+                "isCustom": true,
+                "serializeValue": "16px",
+                "number": 16,
+                "unit": "px"
+              }
+            }
+          }
+        }
+      },
+      "designSelectorCollection": {
+        "map": {}
+      },
+      "cmSelectorCollection": {
+        "map": {}
+      },
+      "animationSelectorCollection": {
+        "map": {}
+      }
+    },
+    "isElementInCollection": false,
+    "hasQuantityInSubtree": false,
+    "isElementInOrderSummary": false,
+    "isElementInShop": false
+  },
+  "syncPackage": {
+    "schemaVersion": 1,
+    "namespace": "toolkit-example",
+    "componentKey": "examples/static-section",
+    "classes": [
+      {
+        "stableKey": "examples/static-section/class/brand-heading",
+        "name": "brand-heading",
+        "collection": "main",
+        "ownedRules": {
+          "main": {
+            "(max-width: 479px)/.brand-heading": {
+              "font-size": {
+                "name": "font-size",
+                "value": "24px",
+                "isCustom": false,
+                "serializeValue": "24px",
+                "number": 24,
+                "unit": "px"
+              }
+            },
+            "(max-width: 767px)/.brand-heading": {
+              "font-size": {
+                "name": "font-size",
+                "value": "28px",
+                "isCustom": false,
+                "serializeValue": "28px",
+                "number": 28,
+                "unit": "px"
+              }
+            },
+            "(max-width: 991px)/.brand-heading": {
+              "font-size": {
+                "name": "font-size",
+                "value": "32px",
+                "isCustom": false,
+                "serializeValue": "32px",
+                "number": 32,
+                "unit": "px"
+              }
+            },
+            "screen/.brand-heading": {
+              "font-size": {
+                "name": "font-size",
+                "value": "36px",
+                "isCustom": false,
+                "serializeValue": "36px",
+                "number": 36,
+                "unit": "px"
+              },
+              "line-height": {
+                "name": "line-height",
+                "value": "1.2",
+                "isCustom": false,
+                "serializeValue": "1.2"
+              }
+            }
+          }
+        }
+      },
+      {
+        "stableKey": "examples/static-section/class/example-copy",
+        "name": "example-copy",
+        "collection": "main",
+        "ownedRules": {
+          "main": {
+            "screen/.example-copy": {
+              "font-size": {
+                "name": "font-size",
+                "value": "18px",
+                "isCustom": false,
+                "serializeValue": "18px",
+                "number": 18,
+                "unit": "px"
+              }
+            }
+          }
+        }
+      },
+      {
+        "stableKey": "examples/static-section/class/example-heading",
+        "name": "example-heading",
+        "collection": "main",
+        "ownedRules": {
+          "main": {
+            "screen/.example-heading": {
+              "margin-bottom": {
+                "name": "margin-bottom",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              },
+              "margin-left": {
+                "name": "margin-left",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              },
+              "margin-right": {
+                "name": "margin-right",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              },
+              "margin-top": {
+                "name": "margin-top",
+                "value": "0",
+                "isCustom": false,
+                "serializeValue": "0"
+              }
+            }
+          }
+        }
+      },
+      {
+        "stableKey": "examples/static-section/class/example-panel",
+        "name": "example-panel",
+        "collection": "main",
+        "ownedRules": {
+          "main": {
+            "(max-width: 767px)/.example-panel": {
+              "gap": {
+                "name": "gap",
+                "value": "16px",
+                "isCustom": true,
+                "serializeValue": "16px",
+                "number": 16,
+                "unit": "px"
+              }
+            },
+            "screen/.example-panel": {
+              "display": {
+                "name": "display",
+                "value": "flex",
+                "isCustom": false,
+                "serializeValue": "flex"
+              },
+              "flex-direction": {
+                "name": "flex-direction",
+                "value": "column",
+                "isCustom": false,
+                "serializeValue": "column"
+              },
+              "gap": {
+                "name": "gap",
+                "value": "24px",
+                "isCustom": true,
+                "serializeValue": "24px",
+                "number": 24,
+                "unit": "px"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "instances": [
+      {
+        "stableKey": "examples/static-section/instance",
+        "rootLogicalNodeKey": "panel"
+      }
+    ],
+    "revision": "4153759a7793965709988ee3512dd96cd4be23c8b1494efd72f86f2a438262cc"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "sourceType": "html",
+  "html": {
+    "entry": "source/page.html",
+    "stylesheets": ["source/page.css"]
+  }
+}

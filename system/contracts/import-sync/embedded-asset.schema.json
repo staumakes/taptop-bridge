@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-taptop.local/contracts/import-sync/embedded-asset.schema.json",
+  "title": "Taptop one-file embedded image",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["stableKey", "sha256", "mimeType", "width", "height", "byteLength", "encoding", "data"],
+  "properties": {
+    "stableKey": { "type": "string", "pattern": "^asset/[a-f0-9]{64}$" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "mimeType": { "enum": ["image/png", "image/jpeg", "image/webp", "image/gif"] },
+    "width": { "type": "integer", "minimum": 1 },
+    "height": { "type": "integer", "minimum": 1 },
+    "byteLength": { "type": "integer", "minimum": 1 },
+    "encoding": { "const": "base64" },
+    "data": { "type": "string", "minLength": 1, "contentEncoding": "base64" }
+  }
+}

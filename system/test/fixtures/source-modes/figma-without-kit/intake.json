@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "sourceType": "figma-without-kit",
+  "figma": {
+    "fileUrl": "https://www.figma.com/design/SYNTHETIC/Taptop-Bridge-Pilot",
+    "screens": ["Synthetic Home"]
+  },
+  "foundationStrategy": "extract-from-screens"
+}

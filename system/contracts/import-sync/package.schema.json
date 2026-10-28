@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-taptop.local/contracts/import-sync/package.schema.json",
+  "title": "Taptop import synchronization package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "namespace", "componentKey", "revision", "classes", "instances"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "namespace": { "$ref": "#/$defs/logicalKey" },
+    "componentKey": { "$ref": "#/$defs/logicalKey" },
+    "revision": { "$ref": "#/$defs/sha256" },
+    "sourceRevision": { "$ref": "#/$defs/sha256" },
+    "classes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stableKey", "name", "collection", "ownedRules"],
+        "properties": {
+          "stableKey": { "$ref": "#/$defs/logicalKey" },
+          "name": { "type": "string", "minLength": 1 },
+          "collection": { "enum": ["main", "design"] },
+          "ownedRules": { "$ref": "#/$defs/ownedRules" }
+        }
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stableKey", "rootLogicalNodeKey"],
+        "properties": {
+          "stableKey": { "$ref": "#/$defs/logicalKey" },
+          "rootLogicalNodeKey": { "$ref": "#/$defs/logicalKey" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "logicalKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$" },
+    "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" },
+    "selectorScopes": {
+      "type": "object",
+      "additionalProperties": { "type": "object", "additionalProperties": true }
+    },
+    "ownedRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "main": { "$ref": "#/$defs/selectorScopes" },
+        "design": { "$ref": "#/$defs/selectorScopes" },
+        "cm": { "$ref": "#/$defs/selectorScopes" },
+        "animation": { "$ref": "#/$defs/selectorScopes" }
+      }
+    }
+  }
+}

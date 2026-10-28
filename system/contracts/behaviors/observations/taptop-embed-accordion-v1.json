@@ -1,0 +1,5 @@
+{
+  "adapter": "taptop/embed-accordion-v1",
+  "evidenceLevel": "locally-reproduced",
+  "summary": "The package is derived from the preserved tt_embed fixture and is inserted through the dedicated Scripts bridge. A live Bridge roundtrip receipt is still required before marking it editor-verified."
+}

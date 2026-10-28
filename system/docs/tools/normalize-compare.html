@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Normalize compare</title>
+<style>
+  /* Dev-only: compares an original page with its normalized copy element by
+     element at the Taptop canvas widths plus three in-between widths. Serve
+     both pages from one local origin. Usage:
+     ?original=/path/index.html&normalized=/path/page.html[&widths=1440,992,768,480,320,900,700,375]
+     Elements are matched by data-taptop-key when the original carries keys,
+     otherwise by document order (the normalizer keeps the element structure).
+     Zero matched elements is a failed comparison, never "identical".
+     Animations and transitions are switched off in both pages, so the settled
+     state is compared; which element runs which animation is compared first. */
+  body { margin: 16px; font: 13px/1.4 system-ui, sans-serif; color: #111; }
+  iframe { border: 0; position: absolute; left: -10000px; top: 0; height: 900px; }
+  table { border-collapse: collapse; margin: 8px 0 24px; }
+  td, th { padding: 4px 8px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; }
+  .ok { color: #16a34a; } .bad { color: #dc2626; }
+</style>
+</head>
+<body>
+<h1>Normalize compare</h1>
+<div id="out">Running…</div>
+<script>
+const q = new URLSearchParams(location.search);
+const original = q.get('original');
+const normalized = q.get('normalized');
+const widths = (q.get('widths') || '1440,992,768,480,320,900,700,375').split(',').map(Number);
+const SKIP = new Set(['SCRIPT', 'STYLE', 'LINK', 'META', 'NOSCRIPT', 'TEMPLATE', 'TITLE', 'BR']);
+const STYLE_PROPS = ['color', 'background-color', 'font-family', 'font-size', 'font-weight', 'line-height', 'letter-spacing', 'border-top-color', 'border-top-width', 'display', 'opacity', 'text-align'];
+
+function load(src, width) {
+  return new Promise(resolve => {
+    const frame = document.createElement('iframe');
+    frame.style.width = `${width}px`;
+    frame.onload = async () => { await frame.contentDocument.fonts.ready; setTimeout(() => resolve(frame), 300); };
+    frame.src = src;
+    document.body.append(frame);
+  });
+}
+function elementsOf(doc, skip = null) {
+  return [...doc.body.querySelectorAll('*')].filter(element => !SKIP.has(element.tagName) && element !== skip);
+}
+// ROOT_WRAPPED: the normalizer wraps several top-level blocks in one .page root.
+// That wrapper has no counterpart in the original and is skipped when matching by order.
+function generatedWrapper(original, normalized) {
+  const visible = doc => [...doc.body.children].filter(element => !SKIP.has(element.tagName));
+  const [only] = visible(normalized);
+  return visible(normalized).length === 1 && only.classList.contains('page') && visible(original).length !== 1 ? only : null;
+}
+function describe(element, win) {
+  const rect = element.getBoundingClientRect();
+  const style = win.getComputedStyle(element);
+  // line-height only shows on elements with their own text; containers get
+  // no value after the normalizer converts inherited unitless line-height to px.
+  const hasText = [...element.childNodes].some(node => node.nodeType === 3 && node.textContent.trim());
+  const parentDisplay = element.parentElement ? win.getComputedStyle(element.parentElement).display : '';
+  return {
+    tag: element.tagName.toLowerCase(),
+    hasText,
+    leaf: element.children.length === 0,
+    blockified: /(^|-)(flex|grid)$/.test(parentDisplay),
+    box: [rect.left + win.scrollX, rect.top + win.scrollY, rect.width, rect.height].map(Math.round),
+    style: Object.fromEntries(STYLE_PROPS.map(prop => [prop, style.getPropertyValue(prop)]))
+  };
+}
+// Documented normalizer equivalences, not differences: Taptop keeps only the
+// first font family (FONT_NAME), and a text layer is inline-flex, which a flex
+// or grid parent blockifies (TAPTOP_BASE_RESET). For a text leaf only the
+// outer display level changes layout; boxes are compared separately.
+function comparable(prop, item) {
+  const value = item.style[prop];
+  if (prop === 'font-family') return value.split(',')[0].replace(/["']/g, '').trim().toLowerCase();
+  // An SVG's children are not laid out by display, so only the outer level counts (SVG Icon is inline-flex).
+  if (prop === 'display' && (item.leaf || item.tag === 'svg') && value !== 'none') {
+    if (item.blockified) return 'block-level';
+    return /^inline/.test(value) ? 'inline-level' : 'block-level';
+  }
+  // Taptop stores px with two decimals: 23.995px and 24px render the same.
+  if (/^-?[\d.]+px$/.test(value)) return `${Math.round(parseFloat(value) * 10) / 10}px`;
+  return value;
+}
+// A family that is not installed renders in a fallback, and the two pages may
+// fall back differently (the original keeps its stack, Taptop needs one bare
+// name). Text sizes are then not comparable, so this is reported.
+function fontAvailable(doc, family) {
+  const context = doc.createElement('canvas').getContext('2d');
+  const sample = 'mmmmmmmmmwwwwwwwiiiiilll 0123456789';
+  return ['monospace', 'serif', 'sans-serif'].some(generic => {
+    context.font = `40px ${generic}`;
+    const base = context.measureText(sample).width;
+    context.font = `40px "${family}", ${generic}`;
+    return context.measureText(sample).width !== base;
+  });
+}
+function missingFonts(frame) {
+  const families = new Set([...frame.contentDocument.querySelectorAll('body *')].map(element => frame.contentWindow.getComputedStyle(element).fontFamily.split(',')[0].replace(/["']/g, '').trim()).filter(name => name && !/^(serif|sans-serif|monospace|system-ui|cursive|fantasy)$/i.test(name)));
+  return [...families].filter(name => !fontAvailable(frame.contentDocument, name));
+}
+// Keys when the original has them; otherwise the n-th visible element of each document.
+function snapshot(frame, byKeys, skip = null) {
+  const doc = frame.contentDocument;
+  const win = frame.contentWindow;
+  const map = new Map();
+  if (byKeys) for (const element of doc.querySelectorAll('[data-taptop-key]')) map.set(element.dataset.taptopKey, describe(element, win));
+  else elementsOf(doc, skip).forEach((element, index) => map.set(`#${index + 1} ${element.tagName.toLowerCase()}`, describe(element, win)));
+  return { map, height: doc.documentElement.scrollHeight, width: doc.documentElement.scrollWidth };
+}
+(async () => {
+  const results = [];
+  for (const width of widths) {
+    const [a, b] = await Promise.all([load(original, width), load(normalized, width)]);
+    // Both pages get the same web-font files (a script may load only some weights in the original).
+    const fontHrefs = [a, b].flatMap(frame => [...frame.contentDocument.querySelectorAll('link[rel="stylesheet"][href*="fonts.googleapis.com"]')].map(link => link.href));
+    for (const frame of [a, b]) {
+      const present = new Set([...frame.contentDocument.querySelectorAll('link[rel="stylesheet"]')].map(link => link.href));
+      for (const href of new Set(fontHrefs)) {
+        if (present.has(href)) continue;
+        const link = frame.contentDocument.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        frame.contentDocument.head.append(link);
+        await new Promise(resolve => { link.onload = link.onerror = resolve; setTimeout(resolve, 3000); });
+      }
+      await frame.contentDocument.fonts.ready;
+    }
+    const byKeys = a.contentDocument.querySelector('[data-taptop-key]') !== null;
+    // Which element runs which animation is compared before animations are
+    // frozen: a rule landing on the wrong element (a spinner's rotation on its
+    // slider) changes no settled box.
+    const animationsOf = (frame, skip = null) => {
+      const win = frame.contentWindow;
+      const entries = byKeys ? [...frame.contentDocument.querySelectorAll('[data-taptop-key]')].map(element => [element.dataset.taptopKey, element])
+        : elementsOf(frame.contentDocument, skip).map((element, index) => [`#${index + 1} ${element.tagName.toLowerCase()}`, element]);
+      return new Map(entries.map(([key, element]) => [key, win.getComputedStyle(element).animationName]));
+    };
+    const moving = [animationsOf(a), animationsOf(b, byKeys ? null : generatedWrapper(a.contentDocument, b.contentDocument))];
+    // Animations run at different phases in the two pages: compare the settled state.
+    for (const frame of [a, b]) {
+      const still = frame.contentDocument.createElement('style');
+      still.textContent = '*, *::before, *::after { animation: none !important; transition: none !important; }';
+      frame.contentDocument.head.append(still);
+    }
+    // A family missing on this computer falls back differently in the two pages
+    // (the original keeps its stack, Taptop one bare name). Both pages get the
+    // same stand-in for it, so boxes stay comparable; the report still names it.
+    const absent = [...new Set([...missingFonts(a), ...missingFonts(b)])];
+    if (absent.length) {
+      for (const frame of [a, b]) {
+        const style = frame.contentDocument.createElement('style');
+        style.textContent = absent.map(name => `@font-face { font-family: "${name}"; src: local("Arial"), local("Helvetica"), local("Liberation Sans"); }`).join('\n');
+        frame.contentDocument.head.append(style);
+        await frame.contentDocument.fonts.ready;
+      }
+      await new Promise(resolve => setTimeout(resolve, 200));
+    }
+    const left = snapshot(a, byKeys);
+    const right = snapshot(b, byKeys, byKeys ? null : generatedWrapper(a.contentDocument, b.contentDocument));
+    const issues = [];
+    if (!left.map.size) issues.push(['—', 'nothing compared', 'the original page has no elements; check the URL']);
+    if (absent.length) issues.push(['—', 'font not installed locally', `${absent.join(', ')}: both pages were compared with Arial in its place; install the font for exact text sizes`]);
+    if (!byKeys) {
+      const tags = [...left.map.values()].map(item => item.tag).join(' ');
+      const otherTags = [...right.map.values()].map(item => item.tag).join(' ');
+      if (tags !== otherTags) issues.push(['—', 'element structure differs', `${left.map.size} → ${right.map.size} elements; matching by order is unreliable`]);
+    }
+    for (const [key, item] of left.map) {
+      const other = right.map.get(key);
+      if (!other) { issues.push([key, 'missing in normalized', '']); continue; }
+      const delta = item.box.map((value, index) => Math.abs(value - other.box[index]));
+      if (delta.some(value => value > 1)) issues.push([key, `box ${item.box.join(',')} → ${other.box.join(',')}`, '']);
+      const [ownAnimation, otherAnimation] = moving.map(names => names.get(key) || 'none');
+      if (ownAnimation !== otherAnimation) issues.push([key, 'animation-name', `${ownAnimation} → ${otherAnimation}`]);
+      for (const prop of STYLE_PROPS) {
+        if (prop === 'line-height' && !item.hasText) continue;
+        if (comparable(prop, item) !== comparable(prop, other)) issues.push([key, prop, `${item.style[prop]} → ${other.style[prop]}`]);
+      }
+    }
+    results.push({ width, matchedBy: byKeys ? 'data-taptop-key' : 'document order', compared: left.map.size, issues, heights: [left.height, right.height], scrollWidths: [left.width, right.width] });
+    a.remove(); b.remove();
+  }
+  window.__compareResults = results;
+  document.getElementById('out').innerHTML = results.map(result => `
+    <h2 class="${result.issues.length ? 'bad' : 'ok'}">${result.width}px — ${result.issues.length ? `${result.issues.length} differences` : 'identical'}</h2>
+    <p>${result.compared} elements matched by ${result.matchedBy}. Page height ${result.heights.join(' → ')}, scroll width ${result.scrollWidths.join(' → ')}</p>
+    ${result.issues.length ? `<table><tr><th>key</th><th>difference</th><th>values</th></tr>${result.issues.slice(0, 80).map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</table>` : ''}`).join('');
+})();
+</script>
+</body>
+</html>

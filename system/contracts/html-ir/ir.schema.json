@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-taptop.local/contracts/html-ir/ir.schema.json",
+  "title": "HTML component intermediate representation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "componentKey", "sourceRevision", "sources", "rootKey", "nodes", "diagnostics"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "componentKey": { "$ref": "#/$defs/logicalKey" },
+    "sourceRevision": { "$ref": "#/$defs/sha256" },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["role", "path", "sha256"],
+        "properties": {
+          "role": { "enum": ["manifest", "html", "stylesheet", "behavior", "asset"] },
+          "path": { "$ref": "#/$defs/relativePath" },
+          "sha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "rootKey": { "$ref": "#/$defs/logicalKey" },
+    "behaviors": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object", "additionalProperties": true,
+        "required": ["key", "adapter", "nodeKeys"],
+        "properties": {
+          "key": { "$ref": "#/$defs/logicalKey" }, "adapter": { "type": "string", "minLength": 1 },
+          "nodeKeys": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/logicalKey" } }
+        }
+      }
+    },
+    "nodes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/node" }
+    },
+    "diagnostics": { "type": "array", "items": { "$ref": "#/$defs/diagnostic" } }
+  },
+  "$defs": {
+    "logicalKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$" },
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "relativePath": { "type": "string", "minLength": 1, "pattern": "^(?!/)(?![A-Za-z]:[\\\\/])(?!.*(?:^|/)\\.\\.(?:/|$)).+$" },
+    "sourceLocation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "line", "column", "domPath"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" }, "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }, "domPath": { "type": "string", "minLength": 1 }
+      }
+    },
+    "node": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "kind", "tagName", "classes", "attributes", "children", "source"],
+      "properties": {
+        "key": { "$ref": "#/$defs/logicalKey" },
+        "kind": { "enum": ["container", "text", "link", "link-block", "button", "image", "inline-svg", "rich-text"] },
+        "tagName": { "type": "string", "minLength": 1 },
+        "classes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "attributes": { "type": "object", "additionalProperties": { "type": "string" } },
+        "text": { "type": "string" },
+        "children": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/logicalKey" } },
+        "asset": { "type": "object", "additionalProperties": true },
+        "behaviorKey": { "$ref": "#/$defs/logicalKey" },
+        "source": { "$ref": "#/$defs/sourceLocation" }
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["severity", "code", "message", "source"],
+      "properties": {
+        "severity": { "enum": ["error", "warning", "info"] }, "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 }, "source": { "$ref": "#/$defs/sourceLocation" }
+      }
+    }
+  }
+}

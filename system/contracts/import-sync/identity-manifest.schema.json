@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-taptop.local/contracts/import-sync/identity-manifest.schema.json",
+  "title": "Explicit logical identity and selector ownership manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "namespace", "componentKey", "classes", "instances"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "namespace": { "$ref": "#/$defs/logicalKey" },
+    "componentKey": { "$ref": "#/$defs/logicalKey" },
+    "classes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stableKey", "name", "collection", "ownedPaths"],
+        "properties": {
+          "stableKey": { "$ref": "#/$defs/logicalKey" },
+          "name": { "type": "string", "minLength": 1 },
+          "collection": { "enum": ["main", "design"] },
+          "ownedPaths": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "required"],
+              "properties": {
+                "path": { "type": "string", "minLength": 1 },
+                "required": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "instances": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stableKey", "rootLogicalNodeKey"],
+        "properties": {
+          "stableKey": { "$ref": "#/$defs/logicalKey" },
+          "rootLogicalNodeKey": { "$ref": "#/$defs/logicalKey" }
+        }
+      }
+    },
+    "assets": { "type": "array" }
+  },
+  "$defs": {
+    "logicalKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$" }
+  }
+}

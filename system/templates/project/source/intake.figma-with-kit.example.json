@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "sourceType": "figma-with-kit",
+  "figma": {
+    "fileUrl": "https://www.figma.com/design/REPLACE_ME/Project",
+    "screens": ["REPLACE_ME: Desktop home"],
+    "uiKit": {
+      "location": "same-file"
+    }
+  }
+}

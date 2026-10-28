@@ -1,0 +1,8 @@
+/* Synthetic test values; not a supplied design system or a client design. */
+.example-panel { display: flex; flex-direction: column; gap: 24px; }
+.example-heading { margin: 0; }
+.brand-heading { font-size: 36px; line-height: 1.2; }
+.example-copy { font-size: 18px; }
+@media (max-width: 991px) { .brand-heading { font-size: 32px; } }
+@media (max-width: 767px) { .example-panel { gap: 16px; } .brand-heading { font-size: 28px; } }
+@media (max-width: 479px) { .brand-heading { font-size: 24px; } }

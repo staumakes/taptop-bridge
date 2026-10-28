@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "componentKey": "examples/static-section",
+  "html": "source/page.html",
+  "rootSelector": ".example-panel",
+  "stylesheets": ["source/page.css"],
+  "breakpointMap": {
+    "(max-width: 991px)": "(max-width: 991px)",
+    "(max-width: 767px)": "(max-width: 767px)",
+    "(max-width: 479px)": "(max-width: 479px)"
+  }
+}

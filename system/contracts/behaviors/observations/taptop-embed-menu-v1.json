@@ -1,0 +1,5 @@
+{
+  "adapter": "taptop/embed-menu-v1",
+  "evidenceLevel": "locally-reproduced",
+  "summary": "Same tt_embed package and Scripts bridge as the accordion embed. The script toggles a class on the menu root; the open-state CSS travels in the page embed stylesheet. Published-page behavior still needs a live check."
+}

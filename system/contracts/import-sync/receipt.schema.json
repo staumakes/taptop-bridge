@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://design-taptop.local/contracts/import-sync/receipt.schema.json",
+  "title": "Taptop target-local synchronization receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "targetKey", "namespace", "componentKey", "packageRevision", "classBindings", "instanceBindings"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "targetKey": { "type": "string", "pattern": "^[A-Za-z0-9._:-]+$" },
+    "namespace": { "$ref": "#/$defs/logicalKey" },
+    "componentKey": { "$ref": "#/$defs/logicalKey" },
+    "packageRevision": { "$ref": "#/$defs/sha256" },
+    "classBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stableKey", "targetClassId", "name", "collection", "ownedPaths", "baseline"],
+        "properties": {
+          "stableKey": { "$ref": "#/$defs/logicalKey" },
+          "targetClassId": { "type": "string", "minLength": 1 },
+          "name": { "type": "string", "minLength": 1 },
+          "collection": { "enum": ["main", "design"] },
+          "ownedPaths": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+          "baseline": { "type": "object", "additionalProperties": true }
+        }
+      }
+    },
+    "instanceBindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stableKey", "targetTagId"],
+        "properties": {
+          "stableKey": { "$ref": "#/$defs/logicalKey" },
+          "targetTagId": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "logicalKey": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$" },
+    "sha256": { "type": "string", "pattern": "^[a-fA-F0-9]{64}$" }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "adapter": "taptop/embed-slider-v1",
+  "evidenceLevel": "locally-reproduced",
+  "summary": "The Tilda slide and card carousel structures and Swiper tracks (.swiper > .swiper-wrapper > .swiper-slide) are normalized to editable layers. A generated tt_embed script handles arrows, bullets, keyboard input and slide swipes, horizontal card scrolling, or Swiper-like track snapping with disabled arrows at the ends. Swiper's initial layout is reproduced by classes and Embed CSS and was compared locally against Swiper 12.1.4; published-page behavior still needs a live check."
+}

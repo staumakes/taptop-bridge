@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scene check</title>
+<style>
+  /* Dev-only: visual self-check of a page with product scenes, run before the page is shown
+     to anyone. Usage: ?src=/path/index.html[&widths=1440,992,768,480,320,900,700,375]
+     Every animation is paused at frame 0 — the state that screenshots, Figma transfer and the
+     Taptop canvas see. A "content" element is an image, an inline SVG or an element with its
+     own text whose effective opacity is at least 0.75 (ghost layers are quieter and may bleed).
+     Findings:
+       hidden-at-rest  content is invisible at frame 0 because an animation starts from opacity 0;
+       clipped         content is cut by an overflow-clipping ancestor or the page edge; a "panel"
+                       (an opaque background or a shadow, at least 24px) counts as content too;
+       tight           text sits closer than 8px to the edge of its clipping box;
+       covered         another element is painted over the text of a content element;
+       page-overflow   the page scrolls sideways.
+     Intentional bleed is declared with a class ending in "--bleed" on the element, an ancestor or
+     the clipping box itself; an intentional overlap is declared with "--overlap" on the element
+     painted on top. A fade overlay (no text, no children, a gradient background) never counts as
+     covering, and inline text inside a paragraph is checked with its paragraph, not on its own.
+     Everything else is fixed or explained to the user. */
+  body { margin: 16px; font: 13px/1.4 system-ui, sans-serif; color: #111; }
+  iframe { border: 0; position: absolute; left: -10000px; top: 0; height: 900px; }
+  table { border-collapse: collapse; margin: 8px 0 24px; }
+  td, th { padding: 4px 8px; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; }
+  .ok { color: #16a34a; } .bad { color: #dc2626; }
+</style>
+</head>
+<body>
+<h1>Scene check</h1>
+<div id="out">Running…</div>
+<script>
+const q = new URLSearchParams(location.search);
+const src = q.get('src');
+const widths = (q.get('widths') || '1440,992,768,480,320,900,700,375').split(',').map(Number);
+const SKIP = new Set(['SCRIPT', 'STYLE', 'LINK', 'META', 'NOSCRIPT', 'TEMPLATE', 'TITLE', 'BR', 'HTML', 'HEAD', 'BODY']);
+const CLIPPING = new Set(['hidden', 'clip']); // auto/scroll containers scroll, they do not hide content
+
+function load(width) {
+  return new Promise(resolve => {
+    const frame = document.createElement('iframe');
+    frame.style.width = `${width}px`;
+    frame.onload = async () => {
+      const doc = frame.contentDocument;
+      await doc.fonts.ready;
+      await Promise.all([...doc.images].map(image => image.complete ? null : new Promise(done => { image.onload = image.onerror = done; })));
+      for (const animation of doc.getAnimations()) { animation.pause(); animation.currentTime = 0; }
+      frame.style.height = `${doc.documentElement.scrollHeight}px`;
+      setTimeout(() => resolve(frame), 150);
+    };
+    frame.src = src;
+    document.body.append(frame);
+  });
+}
+function label(element) {
+  const own = [...element.childNodes].filter(node => node.nodeType === 3).map(node => node.textContent.trim()).join(' ').trim();
+  const name = element.getAttribute('class') || element.tagName.toLowerCase();
+  return own ? `${name} «${own.slice(0, 32)}»` : name;
+}
+function hasOwnText(element) {
+  return [...element.childNodes].some(node => node.nodeType === 3 && node.textContent.trim());
+}
+function isPanel(element, win) {
+  const style = win.getComputedStyle(element);
+  const rect = element.getBoundingClientRect();
+  if (rect.width < 24 || rect.height < 24) return false;
+  const alpha = (style.backgroundColor.match(/[\d.]+/g) || []).map(Number);
+  const opaque = alpha.length === 3 || (alpha.length === 4 && alpha[3] >= 0.85);
+  return (opaque && style.backgroundColor !== 'rgba(0, 0, 0, 0)') || style.boxShadow !== 'none';
+}
+function isContent(element) {
+  if (element.tagName === 'IMG') return true;
+  if (element.tagName === 'svg') return !element.parentElement.closest('svg');
+  if (element.closest('svg')) return false;
+  return hasOwnText(element);
+}
+function opacityOf(element, win) {
+  let value = 1;
+  for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+    const style = win.getComputedStyle(node);
+    if (style.visibility === 'hidden' || style.display === 'none') return 0;
+    value *= Number(style.opacity);
+  }
+  return value;
+}
+function animated(element, win) {
+  for (let node = element; node && node.nodeType === 1; node = node.parentElement) {
+    if (win.getComputedStyle(node).animationName !== 'none') return true;
+  }
+  return false;
+}
+function marked(element, stop, suffix) {
+  for (let node = element; node && node !== stop; node = node.parentElement) {
+    if ([...node.classList].some(name => name.endsWith(suffix))) return true;
+  }
+  return false;
+}
+function visibleBox(element, win, width) {
+  const rect = element.getBoundingClientRect();
+  let box = { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom };
+  let clipper = null, scroller = false;
+  for (let node = element.parentElement; node && node !== win.document.body; node = node.parentElement) {
+    const style = win.getComputedStyle(node);
+    if (/auto|scroll/.test(style.overflowX)) scroller = true;
+    if (!CLIPPING.has(style.overflowX) && !CLIPPING.has(style.overflowY)) continue;
+    const r = node.getBoundingClientRect();
+    const next = {
+      left: CLIPPING.has(style.overflowX) ? Math.max(box.left, r.left) : box.left,
+      right: CLIPPING.has(style.overflowX) ? Math.min(box.right, r.right) : box.right,
+      top: CLIPPING.has(style.overflowY) ? Math.max(box.top, r.top) : box.top,
+      bottom: CLIPPING.has(style.overflowY) ? Math.min(box.bottom, r.bottom) : box.bottom,
+    };
+    if (next.left - box.left > 2 || box.right - next.right > 2 || next.top - box.top > 2 || box.bottom - next.bottom > 2) clipper = clipper || node;
+    box = next;
+  }
+  const page = { left: Math.max(box.left, 0), right: Math.min(box.right, width), top: box.top, bottom: box.bottom };
+  if (!scroller && (page.left - box.left > 2 || box.right - page.right > 2)) clipper = clipper || win.document.body;
+  return { rect, box: page, clipper };
+}
+function check(frame, width) {
+  const win = frame.contentWindow;
+  const doc = frame.contentDocument;
+  const findings = [];
+  if (doc.documentElement.scrollWidth > width + 1) findings.push(['page-overflow', 'document', `scroll width ${doc.documentElement.scrollWidth}`]);
+  for (const element of doc.body.querySelectorAll('*')) {
+    if (SKIP.has(element.tagName) || (!isContent(element) && !isPanel(element, win))) continue;
+    const rect = element.getBoundingClientRect();
+    if (rect.width < 1 || rect.height < 1) continue;
+    const opacity = opacityOf(element, win);
+    if (opacity < 0.1 && animated(element, win)) { findings.push(['hidden-at-rest', label(element), `opacity ${opacity.toFixed(2)} at frame 0`]); continue; }
+    if (opacity < 0.75) continue;
+    const { box, clipper } = visibleBox(element, win, width);
+    if (clipper && !marked(element, clipper.parentElement, '--bleed')) {
+      const shown = Math.max(0, box.right - box.left) * Math.max(0, box.bottom - box.top) / (rect.width * rect.height);
+      findings.push(['clipped', label(element), `${Math.round((1 - shown) * 100)}% hidden by ${clipper === doc.body ? 'page edge' : label(clipper)}`]);
+    }
+    if (!hasOwnText(element) || box.right - box.left < 4 || box.bottom - box.top < 4) continue;
+    if (!clipper && win.getComputedStyle(element).display !== 'inline') {
+      for (let node = element.parentElement; node && node !== doc.body; node = node.parentElement) {
+        const style = win.getComputedStyle(node);
+        if (!CLIPPING.has(style.overflowX)) continue;
+        const r = node.getBoundingClientRect();
+        const own = win.getComputedStyle(element);
+        const gap = Math.min(rect.left + parseFloat(own.paddingLeft) - r.left, r.right - rect.right + parseFloat(own.paddingRight));
+        if (gap < 8 && !marked(element, doc.body, '--bleed')) findings.push(['tight', label(element), `${Math.round(gap)}px from the edge of ${label(node)}`]);
+        break;
+      }
+    }
+    const points = [[0.5, 0.5], [0.15, 0.3], [0.85, 0.3], [0.15, 0.7], [0.85, 0.7]].map(([x, y]) => [box.left + (box.right - box.left) * x, box.top + (box.bottom - box.top) * y]);
+    const covers = new Set();
+    let hits = 0;
+    for (const [x, y] of points) {
+      const hit = doc.elementFromPoint(x, y);
+      if (!hit || hit === element || element.contains(hit) || hit.contains(element)) continue;
+      if (marked(hit, doc.body, '--overlap')) continue;
+      if (!hit.children.length && !hit.textContent.trim() && win.getComputedStyle(hit).backgroundImage.includes('gradient')) continue;
+      hits += 1;
+      covers.add(label(hit));
+    }
+    if (hits >= 2) findings.push(['covered', label(element), `${hits} of 5 points under ${[...covers].join(', ')}`]);
+  }
+  return findings;
+}
+(async () => {
+  const results = [];
+  for (const width of widths) {
+    const frame = await load(width);
+    results.push({ width, findings: check(frame, width) });
+    frame.remove();
+  }
+  window.__sceneCheck = results;
+  document.getElementById('out').innerHTML = results.map(result => `
+    <h2 class="${result.findings.length ? 'bad' : 'ok'}">${result.width}px — ${result.findings.length ? `${result.findings.length} findings` : 'clean'}</h2>
+    ${result.findings.length ? `<table><tr><th>kind</th><th>element</th><th>detail</th></tr>${result.findings.slice(0, 120).map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}</table>` : ''}`).join('');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "taptop-bridge",
+  "version": "0.2.0-alpha.1",
+  "private": true,
+  "license": "MIT",
+  "description": "Isolated experimental HTML to Taptop Bridge",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"system/test/**/*.test.js\"",
+    "toolkit": "node system/bin/taptop.js",
+    "docs:sync": "node system/scripts/sync-agent-docs.js",
+    "docs:check": "node system/scripts/sync-agent-docs.js --check"
+  },
+  "bin": {
+    "taptop-bridge": "system/bin/taptop.js"
+  },
+  "dependencies": {
+    "parse5": "^8.0.1",
+    "postcss": "^8.4.38"
+  }
+}
