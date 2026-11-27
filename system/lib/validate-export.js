@@ -1,4 +1,5 @@
 const { validateTree } = require('./validate-tree');
+const { validateLayerAttributes } = require('./validate-layer-attributes');
 const { gridTemplateColumnsItems, CUSTOM_ONLY_PROPERTIES } = require('./css-rules');
 const { finalizeClassCollection } = require('./runtime-shape');
 
@@ -170,6 +171,7 @@ function validateExport(payload) {
 
   const treeErrors = validateTree(layout.tree);
   if (treeErrors.length) return treeErrors;
+  errors.push(...validateLayerAttributes(payload));
   if (!layout.tree.dataCollection || typeof layout.tree.dataCollection !== 'object' || !layout.tree.dataCollection.map || typeof layout.tree.dataCollection.map !== 'object') {
     errors.push('copiedLayout.tree.dataCollection.map is required by the Taptop runtime model');
   }

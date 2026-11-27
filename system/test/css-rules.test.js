@@ -352,3 +352,15 @@ test('toTaptopRule sends lengths and weights the native controls cannot hold as 
     assert.equal(toTaptopRule(prop, value).isCustom, false, `${prop}: ${value}`);
   }
 });
+
+test('toTaptopRule gives a custom length line-height its number and unit so a paste keeps it', () => {
+  assert.deepEqual(toTaptopRule('line-height', '7.94271vw'), { name: 'line-height', value: '7.94271vw', isCustom: true, serializeValue: '7.94271vw', number: 7.94271, unit: 'vw' });
+  assert.deepEqual(toTaptopRule('line-height', '1.5em'), { name: 'line-height', value: '1.5em', isCustom: true, serializeValue: '1.5em', number: 1.5, unit: 'em' });
+  assert.deepEqual(toTaptopRule('line-height', '120%'), { name: 'line-height', value: '120%', isCustom: true, serializeValue: '120%', number: 120, unit: '%' });
+  for (const value of ['1.2', 'normal', 'calc(1.04 * 3vw)']) {
+    const rule = toTaptopRule('line-height', value);
+    assert.equal(rule.isCustom, true);
+    assert.equal(rule.number, undefined, value);
+  }
+  assert.deepEqual(toTaptopRule('line-height', '24px'), { name: 'line-height', value: '24px', isCustom: false, serializeValue: '24px', number: 24, unit: 'px' });
+});

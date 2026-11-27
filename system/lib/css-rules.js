@@ -390,6 +390,16 @@ function toTaptopRule(prop, value) {
   // the canvas renders it (calc/clamp and unitless read back live 2026-10-12).
   if (prop === 'line-height' && !/^-?[\d.]+px$/.test(normalized)) {
     rule.isCustom = true;
+    // A class created by Taptop's paste rebuilds a custom line-height from
+    // number and unit only: `{ value: '3vw', isCustom: true }` became 0px,
+    // with `number: 3, unit: 'vw'` it stayed 3vw (live 2026-11-27). Unitless
+    // and calc() values cannot be given that way; the importer's class sync
+    // writes them before the paste.
+    const length = /^(-?[\d.]+)(%|em|rem|vw|vh)$/.exec(normalized);
+    if (length) {
+      rule.number = Number(length[1]);
+      rule.unit = length[2];
+    }
     return rule;
   }
   if ((LENGTH_PROPERTIES.has(prop) && !NATIVE_LENGTH.test(normalized)) || (prop === 'font-weight' && !NATIVE_FONT_WEIGHT.test(normalized))) {

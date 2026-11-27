@@ -1,4 +1,5 @@
 const crypto = require('node:crypto');
+const { validateLayerAttributes } = require('./validate-layer-attributes');
 
 const LOGICAL_KEY = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 
@@ -17,6 +18,7 @@ function behaviorPackageErrors(value) {
   value.forEach((item, index) => {
     const label = `behaviorPackages[${index}]`;
     if (!item || typeof item !== 'object' || Array.isArray(item)) { errors.push(`${label} must be an object`); return; }
+    errors.push(...validateLayerAttributes(item.clipboardData));
     if (!LOGICAL_KEY.test(item.key || '')) errors.push(`${label}.key must be a logical key`);
     else if (keys.has(item.key)) errors.push(`Duplicate behavior package key: ${item.key}`);
     else keys.add(item.key);
@@ -62,6 +64,8 @@ function buildEmbedBehaviorPackage({ fixture, key, adapter, name, embedCode }) {
   if (typeof embedCode !== 'string' || !embedCode.trim()) throw new TypeError('BEHAVIOR_EMBED_CODE_INVALID');
 
   const clipboardData = copy(fixture?.clipboardData);
+  const attributeErrors = validateLayerAttributes(clipboardData);
+  if (attributeErrors.length) fail(attributeErrors.join('; '));
   const tags = clipboardData?.copiedLayout?.tree?.tags;
   const rootId = clipboardData?.copiedLayout?.tree?.root;
   const root = tags?.[rootId];

@@ -116,7 +116,10 @@ test('writes a line-height that is not px as a custom rule (the native control w
     const rule = Object.values(output.clipboardData.copiedLayout.mainSelectorCollection.map).find(item => item.rules?.['line-height'])?.rules['line-height'];
     assert.equal(rule.isCustom, true, value);
     assert.equal(rule.value, value);
-    assert.equal(rule.number, undefined);
+    // A length keeps its number and unit so Taptop's paste does not rebuild it as 0px.
+    const length = /^(-?[\d.]+)(%|em|rem|vw|vh)$/.exec(value);
+    assert.equal(rule.number, length ? Number(length[1]) : undefined, value);
+    assert.equal(rule.unit, length ? length[2] : undefined, value);
   }
   const input = fixture();
   input.assetKeys = { 'assets/hero.png': 'asset/example' };
